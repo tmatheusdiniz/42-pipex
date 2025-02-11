@@ -16,7 +16,6 @@
 
 static void	init_all(t_cmd **cmd, t_pipex **pipex, int count_arg);
 static int	create_pipe(t_pipex **pipex);
-static void	pipe_cleanup(t_pipex **pipex, int index);
 
 static void	pipe_cleanup(t_pipex **pipex, int index)
 {
@@ -25,6 +24,7 @@ static void	pipe_cleanup(t_pipex **pipex, int index)
 	i = 0;
 	while (i < index)
 		free((*pipex)->pipe[i++]);
+	free ((*pipex)->pipe);
 }
 
 static int	create_pipe(t_pipex **pipex)
@@ -66,5 +66,8 @@ int	main(int count_arg, char **str, char **env_var)
 {
 	t_cmd	*cmd;
 	t_pipex	*pipex;
-	init_all(&cmd, &pipex, count_arg);
+	init_all(&cmd, &pipex, count_arg);	
+	if (open_files(&pipex, str[1], str[count_arg - 1]) == 4)
+		handle_errors(&cmd, &pipex, 4);
+	handle_forks(str, &cmd, &pipex, env_var);
 }
