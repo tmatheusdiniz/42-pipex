@@ -20,12 +20,13 @@
 typedef struct s_cmd
 {
 	char	*path;
+	char	**commands;
 	pid_t	*pid;
 }	t_cmd;
 
 typedef struct s_pipex
 {
-	int**pipe;
+	int	**pipe;
 	int	fd_in;
 	int	fd_out;
 	int	number_commands;
@@ -34,11 +35,15 @@ typedef struct s_pipex
 }	t_pipex;
 
 // Core
-int	main(int v, char **str, char **env_var);
+int		main(int v, char **str, char **env_var);
+
+// Handlers
+void	handle_forks(char **str, t_cmd **cmd, t_pipex **pipex, char **env_var);
+void	handle_errors(t_cmd **cmd, t_pipex **pipex, int index);
 
 // Parse
-int	find_bin(t_cmd **cmd, char *command, char **env_var);
-int	open_files(t_pipex **pipex, char *infile, char *outfile);
+int		find_bin(t_cmd **cmd, char *command, char **env_var);
+int		open_files(t_pipex **pipex, char *infile, char *outfile);
 
 // Cleanup
-void	handle_errors(t_cmd **cmd, t_pipex **pipex, int index);
+void	matrix_cleanup(char **matrix);
