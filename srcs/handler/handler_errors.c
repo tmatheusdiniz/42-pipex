@@ -15,6 +15,7 @@
 void	handle_errors(t_cmd **cmd, t_pipex **pipex, int index)
 {
 	int	i;
+	(void)index;
 
 	i = 0;
 	if (cmd && *cmd)
