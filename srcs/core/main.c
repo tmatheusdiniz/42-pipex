@@ -79,6 +79,11 @@ int	main(int count_arg, char **str, char **env_var)
 		ft_printf("You should send least 5 paremeters!\n");
 		exit (0);
 	}
+	if (!ft_strncmp(str[1], "here_doc", 9))
+	{
+
+		exit (0);
+	}
 	init_all(&cmd, &pipex, str, count_arg);
 	if (open_files(&pipex, cmd->infile, cmd->outfile) == 4)
 		handle_errors(&cmd, &pipex, 4);

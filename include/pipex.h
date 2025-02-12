@@ -27,6 +27,10 @@
 #define DUP2_ERROR 5
 #define EXEC_ERROR 6
 
+// Read and Write ends
+#define READ_END 0
+#define WRITE_END 1
+
 typedef struct s_cmd
 {
 	char	*path;
@@ -38,13 +42,18 @@ typedef struct s_cmd
 
 typedef struct s_pipex
 {
-	int	**pipe;
-	int	fd_in;
-	int	fd_out;
-	int	number_commands;
-	int	here_doc;
-	int	limiter;
+	int		**pipe;
+	int		fd_in;
+	int		fd_out;
+	int		number_commands;
 }	t_pipex;
+
+typedef struct s_here_doc
+{
+	pid_t	pid;
+	int		fd[2];
+	char	*limiter;
+}	t_here_doc;
 
 // Core
 int		main(int v, char **str, char **env_var);
