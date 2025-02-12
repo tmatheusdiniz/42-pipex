@@ -51,8 +51,8 @@ static void	init_all(t_cmd **cmd, t_pipex **pipex, char **str, int count_arg)
 	if (!*cmd || !*pipex)
 		handle_errors(cmd, pipex, 1);
 	(*cmd)->path = NULL;
-    (*cmd)->commands = NULL;
-    (*cmd)->pid = NULL;
+	(*cmd)->commands = NULL;
+	(*cmd)->pid = NULL;
 	(*pipex)->fd_in = 0;
 	(*pipex)->fd_out = 0;
 	(*pipex)->number_commands = count_arg - 3;
