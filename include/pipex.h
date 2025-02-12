@@ -16,10 +16,22 @@
 #include <fcntl.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
+
+// Error defines
+#define MALLOC_ERROR 1
+#define PATH_ERROR 2
+#define CMD_NOT_FOUND -2
+#define PROCESS_ERROR 3
+#define OPEN_FILE_ERROR 4
+#define DUP2_ERROR 5
+#define EXEC_ERROR 6
 
 typedef struct s_cmd
 {
 	char	*path;
+	char	*infile;
+	char	*outfile;
 	char	**commands;
 	pid_t	*pid;
 }	t_cmd;
@@ -46,4 +58,6 @@ int		find_bin(t_cmd **cmd, char *command, char **env_var);
 int		open_files(t_pipex **pipex, char *infile, char *outfile);
 
 // Cleanup
+void	clean_cmd(t_cmd **cmd);
+void	clean_pipex(t_pipex **pipex);
 void	matrix_cleanup(char **matrix);
