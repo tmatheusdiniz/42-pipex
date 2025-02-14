@@ -1,4 +1,0 @@
-computer
-id
-machine
-computer

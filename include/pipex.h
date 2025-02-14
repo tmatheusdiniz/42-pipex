@@ -19,13 +19,14 @@
 #include <errno.h>
 
 // Error defines
-#define MALLOC_ERROR 1
-#define PATH_ERROR 2
-#define CMD_NOT_FOUND -2
-#define PROCESS_ERROR 3
-#define OPEN_FILE_ERROR 4
-#define DUP2_ERROR 5
-#define EXEC_ERROR 6
+#define MALLOC_ERROR		1
+#define PATH_ERROR			2
+#define CMD_NOT_FOUND		-2
+#define PROCESS_ERROR		3
+#define OPEN_FILE_ERROR		4
+#define DUP2_ERROR			5
+#define EXEC_ERROR			6
+#define PIPE_CREATE_ERROR	7
 
 // Read and Write ends
 #define READ_END 0
@@ -52,7 +53,12 @@ typedef struct s_here_doc
 {
 	pid_t	pid;
 	int		fd[2];
+	int		outfile_fd;
+	int		save_fd;
 	char	*limiter;
+	char	*line;
+	char	*outfile;
+	char	*save;
 }	t_here_doc;
 
 // Core
@@ -66,7 +72,14 @@ void	handle_errors(t_cmd **cmd, t_pipex **pipex, int index);
 int		find_bin(t_cmd **cmd, char *command, char **env_var);
 int		open_files(t_pipex **pipex, char *infile, char *outfile);
 
+// Here_doc
+void	handle_here_doc(t_here_doc **here_doc,
+			t_cmd **cmd, char **str, char **env_var);
+int		open_outfile_here(t_here_doc **here_doc);
+void	handle_errors_here_doc(t_here_doc **here_doc, t_cmd **cmd, int index);
+
 // Cleanup
 void	clean_cmd(t_cmd **cmd);
 void	clean_pipex(t_pipex **pipex);
+void	cleanup_here_doc(t_here_doc **here_doc, t_cmd **cmd);
 void	matrix_cleanup(char **matrix);

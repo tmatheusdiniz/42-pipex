@@ -71,8 +71,9 @@ static void	init_all(t_cmd **cmd, t_pipex **pipex, char **str, int count_arg)
 
 int	main(int count_arg, char **str, char **env_var)
 {
-	t_cmd	*cmd;
-	t_pipex	*pipex;
+	t_cmd		*cmd;
+	t_pipex		*pipex;
+	t_here_doc	*here_doc;
 
 	if (count_arg < 5)
 	{
@@ -80,10 +81,7 @@ int	main(int count_arg, char **str, char **env_var)
 		exit (0);
 	}
 	if (!ft_strncmp(str[1], "here_doc", 9))
-	{
-
-		exit (0);
-	}
+		handle_here_doc(&here_doc, &cmd, str, env_var);
 	init_all(&cmd, &pipex, str, count_arg);
 	if (open_files(&pipex, cmd->infile, cmd->outfile) == 4)
 		handle_errors(&cmd, &pipex, 4);

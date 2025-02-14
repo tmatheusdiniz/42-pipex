@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../include/pipex.h"
+#include <fcntl.h>
 
 int	open_files(t_pipex **pipex, char *infile, char *outfile)
 {
@@ -24,5 +25,20 @@ int	open_files(t_pipex **pipex, char *infile, char *outfile)
 	if (fd < 0)
 		return (close((*pipex)->fd_in), 4);
 	(*pipex)->fd_out = fd;
+	return (0);
+}
+
+int	open_outfile_here(t_here_doc **here_doc)
+{
+	int	fd;
+
+	fd = open((*here_doc)->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd < 0)
+		return (4);
+	(*here_doc)->outfile_fd = fd;
+	fd = open((*here_doc)->save, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	if (fd < 0)
+		return (4);
+	(*here_doc)->save_fd = fd;
 	return (0);
 }
