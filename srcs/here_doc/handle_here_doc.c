@@ -29,6 +29,7 @@ static int	init_here_doc(t_here_doc **here_doc, t_cmd **cmd, char **str)
 	(*here_doc)->line = NULL;
 	(*cmd)->path = NULL;
 	(*cmd)->commands = NULL;
+	(*cmd)->pid = NULL;
 	(*here_doc)->fd[READ_END] = -1;
 	(*here_doc)->fd[WRITE_END] = -1;
 	(*here_doc)->outfile_fd = -1;
