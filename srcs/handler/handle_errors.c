@@ -19,7 +19,7 @@ static void	aux_open_files(t_cmd **cmd)
 	else if (errno == ENOENT)
 		ft_printf("pipex: no such file or directory: %s\n", (*cmd)->infile);
 	else
-		ft_printf("%s: %s\n",(*cmd)->infile, strerror(errno));
+		ft_printf("%s: %s\n", (*cmd)->infile, strerror(errno));
 }
 
 void	clean_cmd(t_cmd **cmd)

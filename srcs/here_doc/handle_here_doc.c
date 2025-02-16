@@ -17,39 +17,40 @@
 static void	aux_here_doc_c(t_here_doc **here_doc, t_cmd **cmd, char **env_var);
 static void	aux_here_doc_p(t_here_doc **here_doc,
 				t_cmd **cmd, char **str, char **env_var);
-static void	aux_child_here_d(t_here_doc **here_doc,
+static void	aux_child_two(t_here_doc **here_doc,
 				t_cmd **cmd, char **env_var);
 
-static int	init_here_doc(t_here_doc **here_doc, char **str)
+static int	init_here_doc(t_here_doc **here_doc, t_cmd **cmd, char **str)
 {
 	*here_doc = (t_here_doc *)malloc(sizeof(t_here_doc));
-	if (!*here_doc)
-		return (MALLOC_ERROR);
+	*cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	if (!*here_doc || !*cmd)
+		return (1);
+	(*here_doc)->line = NULL;
+	(*cmd)->path = NULL;
+	(*cmd)->commands = NULL;
 	(*here_doc)->fd[READ_END] = -1;
 	(*here_doc)->fd[WRITE_END] = -1;
 	(*here_doc)->outfile_fd = -1;
 	(*here_doc)->save_fd = -1;
 	(*here_doc)->limiter = str[2];
 	(*here_doc)->outfile = str[5];
-	(*here_doc)->line = NULL;
 	if (!(*here_doc)->limiter)
 		return (close ((*here_doc)->save_fd),
-			close((*here_doc)->outfile_fd), 0);
+			close((*here_doc)->outfile_fd), free(*here_doc), 0);
 	(*here_doc)->save = ft_strdup("here_doc_tmp");
 	if (!(*here_doc)->save)
 		return (free(*here_doc), 1);
 	return (0);
 }
 
-static void	aux_child_here_d(t_here_doc **here_doc, t_cmd **cmd, char **env_var)
+static void	aux_child_two(t_here_doc **here_doc, t_cmd **cmd, char **env_var)
 {
 	close ((*here_doc)->fd[WRITE_END]);
 	if (dup2((*here_doc)->fd[READ_END], STDIN_FILENO) == -1)
 		handle_errors_here_doc (here_doc, cmd, 5);
-	//close ((*here_doc)->fd[READ_END]);
 	if (dup2((*here_doc)->outfile_fd, STDOUT_FILENO) == -1)
 		handle_errors_here_doc (here_doc, cmd, 5);
-	//close ((*here_doc)->outfile_fd);
 	execve((*cmd)->path, (*cmd)->commands, env_var);
 	handle_errors_here_doc(here_doc, cmd, EXEC_ERROR);
 }
@@ -68,7 +69,7 @@ static void	aux_here_doc_c(t_here_doc **here_doc, t_cmd **cmd, char **env_var)
 			handle_errors_here_doc(here_doc, cmd, 1);
 		if (!ft_strncmp((*here_doc)->line, (*here_doc)->limiter, size_limiter)
 			&& ((*here_doc)->line[size_limiter] == '\n'
-			|| (*here_doc)->line[size_limiter] == '\0'))
+				|| (*here_doc)->line[size_limiter] == '\0'))
 		{
 			free ((*here_doc)->line);
 			break ;
@@ -77,14 +78,7 @@ static void	aux_here_doc_c(t_here_doc **here_doc, t_cmd **cmd, char **env_var)
 			ft_strlen((*here_doc)->line));
 		free((*here_doc)->line);
 	}
-	lseek((*here_doc)->save_fd, 0, SEEK_SET);
-	if (dup2((*here_doc)->save_fd, STDIN_FILENO) == -1)
-		handle_errors_here_doc(here_doc, cmd, DUP2_ERROR);
-	//close ((*here_doc)->save_fd);
-	if (dup2((*here_doc)->fd[WRITE_END], STDOUT_FILENO) == -1)
-		handle_errors_here_doc(here_doc, cmd, DUP2_ERROR);
-	execve((*cmd)->path, (*cmd)->commands, env_var);
-	handle_errors_here_doc(here_doc, cmd, EXEC_ERROR);
+	aux_child(here_doc, cmd, env_var);
 }
 
 static void	aux_here_doc_p(t_here_doc **here_doc,
@@ -105,7 +99,7 @@ static void	aux_here_doc_p(t_here_doc **here_doc,
 		i = find_bin(cmd, (*cmd)->commands[0], env_var);
 		if (i == MALLOC_ERROR || i == PATH_ERROR || i == CMD_NOT_FOUND)
 			handle_errors_here_doc(here_doc, cmd, i);
-		aux_child_here_d(here_doc, cmd, env_var);
+		aux_child_two(here_doc, cmd, env_var);
 	}
 	else
 	{
@@ -121,7 +115,7 @@ void	handle_here_doc(t_here_doc **here_doc,
 {
 	int	i;
 
-	if (init_here_doc(here_doc, str))
+	if (init_here_doc(here_doc, cmd, str))
 		handle_errors_here_doc(here_doc, cmd, MALLOC_ERROR);
 	if (open_outfile_here(here_doc) == 4)
 		handle_errors_here_doc(here_doc, cmd, 4);

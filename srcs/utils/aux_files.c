@@ -38,7 +38,17 @@ int	open_outfile_here(t_here_doc **here_doc)
 	(*here_doc)->outfile_fd = fd;
 	fd = open((*here_doc)->save, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
-		return (4);
+		return (close((*here_doc)->outfile_fd), 4);
 	(*here_doc)->save_fd = fd;
+	return (0);
+}
+
+int	restore_save(t_here_doc **here_doc)
+{
+	if ((*here_doc)->save_fd != -1)
+		close ((*here_doc)->save_fd);
+	(*here_doc)->save_fd = open ("here_doc_tmp", O_RDONLY);
+	if ((*here_doc)->save_fd < 0)
+		return (4);
 	return (0);
 }

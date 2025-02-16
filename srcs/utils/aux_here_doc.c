@@ -60,3 +60,14 @@ void	handle_errors_here_doc(t_here_doc **here_doc, t_cmd **cmd, int index)
 		cleanup_here_doc(here_doc, cmd);
 	exit (1);
 }
+
+void	aux_child(t_here_doc **here_doc, t_cmd **cmd, char **env_var)
+{
+	restore_save(here_doc);
+	if (dup2((*here_doc)->save_fd, STDIN_FILENO) == -1)
+		handle_errors_here_doc(here_doc, cmd, DUP2_ERROR);
+	if (dup2((*here_doc)->fd[WRITE_END], STDOUT_FILENO) == -1)
+		handle_errors_here_doc(here_doc, cmd, DUP2_ERROR);
+	execve((*cmd)->path, (*cmd)->commands, env_var);
+	handle_errors_here_doc(here_doc, cmd, EXEC_ERROR);
+}

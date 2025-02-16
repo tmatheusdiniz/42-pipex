@@ -75,8 +75,10 @@ int		open_files(t_pipex **pipex, char *infile, char *outfile);
 // Here_doc
 void	handle_here_doc(t_here_doc **here_doc,
 			t_cmd **cmd, char **str, char **env_var);
-int		open_outfile_here(t_here_doc **here_doc);
 void	handle_errors_here_doc(t_here_doc **here_doc, t_cmd **cmd, int index);
+void	aux_child(t_here_doc **here_doc, t_cmd **cmd, char **env_var);
+int		open_outfile_here(t_here_doc **here_doc);
+int		restore_save(t_here_doc **here_doc);
 
 // Cleanup
 void	clean_cmd(t_cmd **cmd);
