@@ -15,14 +15,14 @@
 
 static char	*find_path(char **env_var);
 
-static void	clean_split(char **split, int index)
+static void	clean_split(char **split)
 {
 	int	i;
 
 	i = 0;
-	while (i < index)
+	while (split[i])
 		free(split[i++]);
-	free (split);
+	free(split);
 }
 
 static char	*find_path(char **env_var)
@@ -50,15 +50,16 @@ int	find_bin(t_cmd **cmd, char *command, char **env_var)
 	directories = ft_split(path, ':');
 	if (!directories)
 		return (1);
+	i = 0;
 	while (directories[i])
 	{
 		temp_path = ft_strjoin(directories[i], "/");
 		path = ft_strjoin(temp_path, command);
 		free (temp_path);
 		if (access(path, X_OK) == 0)
-			return (clean_split(directories, i), (*cmd)->path = path, 0);
+			return (clean_split(directories), (*cmd)->path = path, 0);
 		free (path);
 		++ i;
 	}
-	return (clean_split(directories, i), -2);
+	return (clean_split(directories), -2);
 }

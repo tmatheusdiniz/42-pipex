@@ -12,6 +12,11 @@
 
 #include "../../include/pipex.h"
 
+static void	aux_check(char *cmd)
+{
+	ft_printf("pipex: command not found: %s\n", cmd);
+}
+
 void	cleanup_here_doc(t_here_doc **here_doc, t_cmd **cmd)
 {
 	if (here_doc)
@@ -70,4 +75,33 @@ void	aux_child(t_here_doc **here_doc, t_cmd **cmd, char **env_var)
 		handle_errors_here_doc(here_doc, cmd, DUP2_ERROR);
 	execve((*cmd)->path, (*cmd)->commands, env_var);
 	handle_errors_here_doc(here_doc, cmd, EXEC_ERROR);
+}
+
+int	check_cmds(char **str, char **env_var)
+{
+	int		i;
+	int		j;
+	t_cmd	*cmd;
+	char	**direc;
+
+	i = 0;
+	cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	direc = ft_split(str[3], ' ');
+	if (!cmd || !direc)
+		return (1);
+	j = find_bin(&cmd, direc[0], env_var);
+	matrix_cleanup(direc);
+	if (j == -2)
+		return (free(cmd), aux_check(str[3]), j);
+	free (cmd->path);
+	direc = ft_split(str[4], ' ');
+	if (!direc)
+		return (1);
+	i = 0;
+	j = find_bin(&cmd, direc[0], env_var);
+	matrix_cleanup(direc);
+	if (j == -2)
+		return (free(cmd), aux_check(str[4]), j);
+	free (cmd->path);
+	return (free(cmd), 0);
 }

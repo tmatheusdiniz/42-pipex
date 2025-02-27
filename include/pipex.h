@@ -67,6 +67,7 @@ int		main(int v, char **str, char **env_var);
 // Handlers
 void	handle_forks(char **str, t_cmd **cmd, t_pipex **pipex, char **env_var);
 void	handle_errors(t_cmd **cmd, t_pipex **pipex, int index);
+int		check_cmds(char **str, char **env_var);
 
 // Parse
 int		find_bin(t_cmd **cmd, char *command, char **env_var);
